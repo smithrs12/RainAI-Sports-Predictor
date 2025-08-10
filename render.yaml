@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: sports-ai-web
+    env: python
+    rootDir: web
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: API_BASE_URL
+        value: https://sports-ai-api.onrender.com  # update after first deploy
+      - key: REDIS_URL
+        sync: false
+      - key: STREAMLIT_SERVER_PORT
+        value: "10000"
+    plan: starter
+
+  - type: web
+    name: sports-ai-api
+    env: python
+    rootDir: api
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: MODEL_STORAGE_PATH
+        value: /opt/models
+    plan: starter
+    healthCheckPath: /health
