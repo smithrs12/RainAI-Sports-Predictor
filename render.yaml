@@ -9,12 +9,9 @@ services:
       - key: STRIPE_PUBLISHABLE_KEY
         sync: false
       - key: API_BASE_URL
-        value: https://sports-ai-api.onrender.com  # update after first deploy
+        value: https://sports-ai-api.onrender.com
       - key: REDIS_URL
         sync: false
-      - key: STREAMLIT_SERVER_PORT
-        value: "10000"
-    plan: starter
 
   - type: web
     name: sports-ai-api
@@ -33,5 +30,20 @@ services:
         sync: false
       - key: MODEL_STORAGE_PATH
         value: /opt/models
-    plan: starter
     healthCheckPath: /health
+
+  - type: worker
+    name: sports-ai-worker
+    env: python
+    rootDir: worker
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: REDIS_URL
+        sync: false
+      - key: MODEL_NAME
+        value: baseline_xgb_v1
+      - key: WORKER_INTERVAL_SECONDS
+        value: "900"   # 15 minutes
+      - key: RETRAIN_HOUR_UTC
+        value: "6"     # 06:00 UTC daily
