@@ -1,19 +1,5 @@
 services:
   - type: web
-    name: sports-ai-web
-    env: python
-    rootDir: web
-    buildCommand: pip install -r requirements.txt
-    startCommand: bash start.sh
-    envVars:
-      - key: STRIPE_PUBLISHABLE_KEY
-        sync: false
-      - key: API_BASE_URL
-        value: https://sports-ai-api.onrender.com
-      - key: REDIS_URL
-        sync: false
-
-  - type: web
     name: sports-ai-api
     env: python
     rootDir: api
@@ -30,6 +16,8 @@ services:
         sync: false
       - key: MODEL_STORAGE_PATH
         value: /opt/models
+      - key: MODEL_NAME
+        value: baseline_xgb_v1   # API & worker stay in sync
     healthCheckPath: /health
 
   - type: worker
